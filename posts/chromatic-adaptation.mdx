@@ -53,6 +53,8 @@ Based on LMS cones gain, Von Kries adaptation transforms one illuminant to other
 
 Von Kries chromatic adaptation transformation is a linear transformation of the source color to destination color based on LMS cones gain for adaptation to destination illuminant. That is, we can transform the color in one illuminant to other illuminants if we scale the color with a gain of LMS for adaptation to color constancy.
 
+> [!INFO]
+>
 > If you're not familiar with concepts like **CIE RGB**, **CIE XYZ** tristimulus values, **chromaticity diagram**, and other color science topics, please refer to those topics at my previous blog about [color-science](https://santhalakshminarayana.github.io/blog/color-science).
 
 The destination LMS cone responses can be calculated by multiplying the gain LMS with source LMS cone responses. In matrix form, the representation is
@@ -204,6 +206,8 @@ $$
 
 $$(X, Y, Z)$$ values for source and destination are illuminant white point values in **CEI XYZ**.
 
+> [!NOTE]
+>
 > [White point](https://en.wikipedia.org/wiki/White_point) is the color that is formed when all cone sensitivity responses are maximum.
 
 ---
@@ -237,6 +241,8 @@ $$
 
 where $R_{avg}$, $G_{avg}$, and $B_{avg}$ are means of each image channel (R, B, G). Scale the mean values to the maximum intensity value of an image which is generally 255 (8-bit).
 
+> [!INFO]
+>
 > Images are generally stored in JPEG or PNG in [sRGB](https://en.wikipedia.org/wiki/SRGB) format. To mimic the human perception of non-linear luminance factor, while taking pictures, exposure values are [Gamma corrected](https://www.cambridgeincolour.com/tutorials/gamma-correction.htm) with a value close to 2.2. And any image processing operation should be applied on linear RGB values by converting sRGB gamma to linear RGB without gamma.
 
 Read source image to which we apply chromatic adaptation and transform to destination illuminant,
@@ -312,6 +318,8 @@ Illuminant for D65 white is **[0.95047, 1., 1.08883]**, these are the **CIE XYZ*
 
 We implement chromatic adaptation transform step-by-step.
 
+> [!IMPORTANT]
+>
 > Every operation should be applied on **linear RGB**
 
 First, convert illuminant sRGB values to **CIE XYZ**.

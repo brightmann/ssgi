@@ -52,6 +52,8 @@ Cython translates the Python code into C extension code and compiles the C code 
 pip install Cython
 ```
 
+> [!IMPORTANT]
+>
 > To compile the C code into an object file, we need a C compiler. Ubuntu comes with **gcc** by default. For other platforms like Windows, install the C compiler if not installed previously.
 
 ---
@@ -207,6 +209,8 @@ from calculate_y_cython import calculate_y_cython
 
 Though it is easy to work with Cython using **pyximport**, there are some [limitations with pyximport](https://cython.readthedocs.io/en/stable/src/userguide/source_files_and_compilation.html#limitations) and it is also not flexible as normal setup.
 
+> [!WARNING]
+>
 > It is not recommended to use **pyximport** while distributing Python packages and modules.
 
 ---
@@ -245,6 +249,8 @@ If no type is specified, the parameters and return values are treated as Python 
 
 Now, make some changes to _calculate_y_cython.pyx_ with static type declarations and function definitions as,
 
+> [!NOTE]
+>
 > [Call the C functions in Cython](https://cython.readthedocs.io/en/stable/src/tutorial/external.html) inplace of Python functions that reduces the Python interaction.
 
 ```python:calculate_y_cython.pyx
@@ -273,7 +279,9 @@ cpdef calculate_y_cython(li n):
     return ys
 ```
 
-> speed can be improved further by disabling bound checking(@cython.boundscheck(False)) and negative indexing(@cython.wraparound(False)) [compiler directive instructions](https://cython.readthedocs.io/en/stable/src/userguide/source_files_and_compilation.html#compiler-directives).
+> [!INFO]
+>
+> Speed can be improved further by disabling bound checking(@cython.boundscheck(False)) and negative indexing(@cython.wraparound(False)) [compiler directive instructions](https://cython.readthedocs.io/en/stable/src/userguide/source_files_and_compilation.html#compiler-directives).
 
 Check the annotations for the Cython code, most of the yellow lines are now changed to white and only list operations are dark yellow because lists are Python objects. In a later section, we discuss optimizing lists using C arrays.
 

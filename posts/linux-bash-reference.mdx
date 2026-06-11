@@ -155,7 +155,10 @@ For expressions:
   - Use *$((x + y))*
   - Or *\$((\$x + $y))*
   - Or *(( x += 1 ))*
-  > Note: This will concat the numbers: *z=\$x+\$y*
+
+> [!NOTE]
+>
+> Note: This will concat the numbers: *z=\$x+\$y*
 
 Command substitution: capture output of a command to another command
   - *x=\`echo "Hi "$name\`*
@@ -359,6 +362,9 @@ IFS=','
 echo "${arr2[*]}" # abc,abc def,def
 IFS=$pIFS
 ```
+
+> [!INFO]
+>
 > Use Associative Arrays for more advanced array behavior.
 
 ---

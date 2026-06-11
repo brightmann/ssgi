@@ -116,6 +116,8 @@ The function _ssr()_ takes arguments of an image, for which retinex has to be es
 
 _get_gaussian_blur()_ gives Gaussian blur of an image. In this function, we are not using normal _cv2.GaussianBlur()_ method but calculating Gaussian blur using _cv2.filter2D()_ using linear seperability of Gaussian distribution kernels. The reason is, _cv2.GaussianBlur()_ is too slow for large kernels. But _cv2.filter2D()_ applies filter to an image using [fast-Fourier transform](https://en.wikipedia.org/wiki/Fast_Fourier_transform) if _kernel size (ksize)_ > 11. **fast Fourier transform** computes the convolution in a very few milliseconds than the traditional convolution that takes days or even years to complete.
 
+> [!NOTE]
+>
 > As [OpenCV implementation of fast-Fourier transform](https://docs.opencv.org/4.5.5/de/dbc/tutorial_py_fourier_transform.html) is faster than NumPy implementation, we proceed with OpenCV default Fourier transform implementations instead of NumPy or SciPy.
 
 ![Single scale retinex:=:100](retinex-image-enhancement/single-scale-retinex.jpg)

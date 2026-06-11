@@ -105,6 +105,8 @@ x, a, b, c, d = 2, 13, 1.2, 4, 7
 res = solve_expression(x, a, b, c, d)
 ```
 
+> [!INFO]
+>
 > Inspect the Intermediate Representation (IR) of the function using solve_expression.inspect_types()
 
 As Numba **@jit** defers the JIT compilation until it encounters the first call to the function, the function call with arguments _solve_expression(x, a, b, c, d)_ takes some time for executions. But, function calls later at this point will be fast.

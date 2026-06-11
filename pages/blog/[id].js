@@ -54,35 +54,65 @@ function getHeadingAnchorProps(props) {
 }
 
 function getBlockQuoteProps(props) {
-  let rgxw = /(?<all>\|\{\w+\}\|\s).*/;
-  let rgx = /\|\{(?<tag>\w+)\}\|.*/;
-  var bg_color = blockquote_background_color;
-  var brd_color = blockquote_border;
+  const tagRegex = /^\[!(?<tag>INFO|NOTE|IMPORTANT|WARNING)\]\s*\n?/i;
 
-  if (typeof props.children.props.children == "string") {
-    var qText = props.children.props.children;
-    if (rgxw.exec(qText) != null) {
-      if (qText.match(rgx) != null) {
-        var tag = qText.match(rgx).groups.tag;
-        switch (tag) {
-          case "date":
-            break;
+  // Default = INFO
+  let bgColor = blockquote_background_color;
+  let borderColor = blockquote_border;
 
-          case "info":
-            break;
+  const paragraph = props?.children?.[1];
+  const text = paragraph?.props?.children;
 
-          case "warn":
-            break;
-
-          case "error":
-            break;
-        }
-      }
-    }
-    return [props, bg_color, brd_color];
+  if (typeof text !== "string") {
+    return [props, bgColor, borderColor];
   }
 
-  return [props, bg_color, brd_color];
+  const match = text.match(tagRegex);
+  const tag = match?.groups?.tag?.toUpperCase() ?? "INFO";
+
+  switch (tag) {
+    case "NOTE":
+      bgColor = "#f3f4f6";
+      borderColor = "#6b7280";
+      break;
+
+    case "IMPORTANT":
+      bgColor = "#ede9fe";
+      borderColor = "#7c3aed";
+      break;
+
+    case "WARNING":
+      bgColor = "#fef3c7";
+      borderColor = "#d97706";
+      break;
+
+    case "INFO":
+    default:
+      bgColor = blockquote_background_color;
+      borderColor = blockquote_border;
+      break;
+  }
+
+  const cleanedParagraph = {
+    ...paragraph,
+    props: {
+      ...paragraph.props,
+      children: text.replace(tagRegex, ""),
+    },
+  };
+
+  return [
+    {
+      ...props,
+      children: [
+        props.children[0],
+        cleanedParagraph,
+        ...props.children.slice(2),
+      ],
+    },
+    bgColor,
+    borderColor,
+  ];
 }
 
 const components = {
@@ -235,16 +265,17 @@ const components = {
   ),
 
   blockquote: (props) => {
+    const [newProps, bgColor, borderColor] = getBlockQuoteProps(props)
     return (
       <blockquote
         style={{
           fontStyle: "italic",
-          backgroundColor: blockquote_background_color,
+          backgroundColor: bgColor,
           padding: "10px",
           margin: "1vh 0 1vh 0",
-          borderLeft: `5px solid ${blockquote_border}`,
+          borderLeft: `5px solid ${borderColor}`,
         }}
-        {...props}
+        {...newProps}
       />
     );
   },

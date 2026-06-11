@@ -43,6 +43,8 @@ Also, there are external libraries like Numpy that release GIL and compute the t
 
 [multiprocessing](https://docs.python.org/3/library/multiprocessing.html) module in Python offers a variety of APIs for achieving multiprocessing. In this blog, we discuss [mulitprocessing.Pool](https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool) class that takes multiple numbers of tasks and executes them parallelly by distributing tasks among multiple cores/workers.
 
+> [!INFO]
+> 
 > [concurrent.futures.ProcessPoolExecutor](https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.ProcessPoolExecutor) provides a higher level interface on top of **multiprocessing** and offers additonal functions to control the process pool.
 
 ## Multiprocessing Pool
@@ -59,6 +61,8 @@ Consider a function that takes around **1-second** to complete. And we have to c
 
 The following example shows **fun_1()** as a function that takes a parameter **a**, sleeps for 1 second, and then returns the square of **a**.
 
+> [!NOTE]
+>
 > Why prefer [time.perf_counter()](https://peps.python.org/pep-0418/) over time.time()? time.time() is not monotonic - which means that the system can change the clock time with synchronization to the internet or other update. Where time.perf_counter() is system-wide and the reference point is unknown so only the results between consecutive calls are considered.
 
 Now, call the function 10 times by passing the elements in the range(0..10). If we call the function without parallel processing, the total time will be around 10 seconds because every function call takes 1 second, and for 10 function calls it will be around 10 seconds.
@@ -141,16 +145,24 @@ Pool.map() takes the following arguments
 - **iterable**: an iterable whose elements are passed as arguments to the function above
 - **chunksize**: chunk size number that used to divide the tasks
 
+> [!INFO]
+>
 > based on the nature of tasks, different **chunksize** numbers [schedules tasks differently](https://stackoverflow.com/questions/53751050/multiprocessing-understanding-logic-behind-chunksize)
 
+> [!INFO]
+>
 > In UNIX and such systems, [multiprocessing creates processes](https://docs.python.org/3/library/multiprocessing.html#contexts-and-start-methods) using a fork, and in windows, it starts processes using spawn. There are some [additional restrictions](https://docs.python.org/3/library/multiprocessing.html#contexts-and-start-methods) one should be aware of when the process start method is other than fork like protecting the entry point of the program by creating processes inside _if \_\_name\_\_==\_\_main\_\__ because spawn creates new python interpreter for each process.
 
 As we have 8 cores available and 10 tasks at hand, Pool.map() distributes the tasks among the 8 workers by dividing tasks into chunks like [2, 2, 1, 1, 1, 1, 1, 1] and pass them to workers.
 
 The total time taken with multiprocessing is 2 seconds which is 5x times faster than without multiprocessing (10 seconds).
 
+> [!NOTE]
+>
 > for large iterable size use Pool.imap() with chunksize for better efficiency
 
+> [!NOTE]
+>
 > for multiple parameters function, use Pool.starmap() or Pool.map() with partial functions
 
 ### Process vs Pool
@@ -161,6 +173,8 @@ Use process, when there is a small number of tasks and each task takes a large a
 
 ## Sharing data between processes
 
+> [!WARNING]
+>
 > It is strongly recommended to not share data between processes
 
 ### Share data with global variables (copy-on-write)
@@ -194,6 +208,8 @@ with Pool(processes=cpu_count(), initializer=pool_initializer, initargs=(X, A)) 
 
 In the above snippet, we initialized the pool with the _pool_initializer_ function, this function will be called for every worker after they start and any data globalized inside this initialization function is available to all child processes.
 
+> [!NOTE]
+>
 > Even though we don't need the initializer function here to share data as we can make data global at the top level and all child processes would get a snapshot of the global data, there are other cases where the initializer function is useful. Like reading a file and sharing data, making a database connection, etc, which might work on variable parameters that we can pass in pool **initargs**.
 
 Sharing data by leveraging global variables and copy-on-write data is only useful for read-only data. If any child process changes the global variable value, they don't reflect in the parent process.
@@ -347,6 +363,8 @@ First, we defined the shape of the array **X_Shape**, and then created a Numpy a
 
 **np.frombuffer** takes a 1-dimensional buffer array and interprets it into a Numpy array so we can manipulate the array easily. We used _X.get_obj()_ instead **X** because **X** is a synchronized wrapper around the raw array and calling the **get_obj()** returns the raw buffer object.
 
+> [!IMPORTANT]
+>
 > For raw arrays (RawArray), objects should be passed normally without calling get_obj().
 
 Why use [**np.frombuffer**](https://www.educba.com/numpy-frombuffer/)? Since Numpy arrays take a large amount of memory space, we don't want to create a copy that again takes large memory. So, using **np.frombuffer** by utilizing the buffer protocol, we can get a Numpy array which is just a wrapper around the buffer memory.
